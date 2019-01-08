@@ -1,4 +1,5 @@
 import os
+import logging
 import sys
 import subprocess
 import codecs
@@ -20,15 +21,24 @@ def build_dic(wav):
 
 def main(wav, des):
     # Get the spkr's gender
+    flog = des+os.sep+"pitch_extraction.log"
+    logging.basicConfig(filename = flog, level = logging.DEBUG)
+
+    logging.info("Start building the dictionary of spker's gender...")
     gender_dic = build_dic(wav)
+    logging.info("Done with building the dictionary...")
 
     praat = ""
     pitch_bot = "50"
     pitch_top = "300"
 
+    logging.info("Start pitch extraction...")
     for usg in os.listdir(wav):
         dr1 = wav+os.sep+ug
         for spk in os.listdir(dr1):
+            spkout = des+os.sep+usg+os.sep+spk
+            if not os.path.isdir(spkout):
+                os.makedirs(spkout)
             dr2 = dr1 + os.sep +spk
             for fwav in os.listdir(dr2):
                 fwav = dr2 + os.sep + fwav
@@ -36,11 +46,10 @@ def main(wav, des):
                 if gender == "F":
                     pitch_bot = "75"
                     pitch_top = "500"
-                fout = des+os.sep+fwav
-                subprocess.call([praat, ""])
-                # we do
-
-
+                fout = fwav.replace(".wav", ".pitch")
+                logging.info("Pitch extraction: {} {}".format(spk, fwav))
+                subprocess.call([praat, "--run", "ExtractF0.praat", fwav, fout, spkout, pitch_top, pitch_bot])
+    logging.info("Done with pitch extraction successfully.")
 
 if __name__ == "__main__":
     if len(sys.argv) != 3 :
