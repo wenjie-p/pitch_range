@@ -8,7 +8,7 @@ def build_dic(wav):
 
     dic = {}
 
-    fp = "../../resource_aishell/speaker.info"
+    fp = wav+"/../../resource_aishell/speaker.info"
     f = codecs.open(fp, "r", encoding = "utf8")
     content = f.readlines()
     f.close()
@@ -28,27 +28,28 @@ def main(wav, des):
     gender_dic = build_dic(wav)
     logging.info("Done with building the dictionary...")
 
-    praat = ""
+    praat = "/home/pwj/workspace/third_party/praat"
     pitch_bot = "50"
     pitch_top = "300"
 
     logging.info("Start pitch extraction...")
     for usg in os.listdir(wav):
-        dr1 = wav+os.sep+ug
+        dr1 = wav+os.sep+usg
         for spk in os.listdir(dr1):
             spkout = des+os.sep+usg+os.sep+spk
             if not os.path.isdir(spkout):
                 os.makedirs(spkout)
             dr2 = dr1 + os.sep +spk
             for fwav in os.listdir(dr2):
-                fwav = dr2 + os.sep + fwav
-                gender = gender_dic[spk]
+                f = dr2 + os.sep + fwav
+                key = spk.replace("S", "")
+                gender = gender_dic[key]
                 if gender == "F":
                     pitch_bot = "75"
                     pitch_top = "500"
-                fout = fwav.replace(".wav", ".pitch")
+                fout = fwav.replace(".wav", "")
                 logging.info("Pitch extraction: {} {}".format(spk, fwav))
-                subprocess.call([praat, "--run", "ExtractF0.praat", fwav, fout, spkout, pitch_top, pitch_bot])
+                subprocess.call([praat, "--run", "ExtractF0.praat", f, fout, spkout, pitch_top, pitch_bot])
     logging.info("Done with pitch extraction successfully.")
 
 if __name__ == "__main__":
