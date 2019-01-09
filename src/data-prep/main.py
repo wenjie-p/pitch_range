@@ -107,9 +107,10 @@ def pitch_extraction(wav, des):
 
     work(chunks, des)
     
+
 if __name__ == "__main__":
     if len(sys.argv) != 3 :
         print("Usage: {} data des".format(sys.argv[0]))
         exit(1)
 
-    main(sys.argv[1], sys.argv[2])
+    pitch_extraction(sys.argv[1], sys.argv[2])
