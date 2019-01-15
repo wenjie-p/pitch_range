@@ -15,7 +15,7 @@ out_file$ = out_dir$ + "/" + pitch_name$ + ".pitch"
 bot = number(bot$)
 top = number(top$)
 
-To Pitch: 0, bot, top
+To Pitch: 0.005, bot, top
 no_of_frames = Get number of frames
 
 

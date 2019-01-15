@@ -6,8 +6,10 @@ import numpy as np
 
 def main(src, des):
 
-    for usg in os.lisrdir(src):
+    for usg in os.listdir(src):
         dr1 = src+os.sep+usg
+        if not os.path.isdir(dr1):
+            continue
         for spk in os.listdir(dr1):
             dr2 = dr1+os.sep+spk
             pitches = []
@@ -26,20 +28,24 @@ def main(src, des):
                         continue
                     pitches.append(p)
             pitches = np.array(pitches)
-            miu = pitches.mean()
-            sigma = pitches.var()
-
-            if not os.isdir(des+os.sep+usg):
-                os.mkdirs(des+os.sep+usg)
-            fout = des+os.sep+usg+spk+".info"
+#            miu = pitches.mean()
+#            sigma = pitches.var()
+#
+            dr = "/".join([des, usg])
+            if not os.path.isdir(dr):
+                os.makedirs(dr)
+            fout = dr+"/"+spk+".info"
             fp = codecs.open(fout, "w", encoding = "utf8")
-            fp.write(miu+"\n")
-            fp.write(sigma+"\n")
+#            fp.write(miu+"\n")
+#            fp.write(sigma+"\n")
+            pitches = ["{: .3f}".format(x) for x in pitches]
+            fp.write(" ".join(pitches))
             fp.close()
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != :
+    if len(sys.argv) != 3:
+        print("This script grouping the pitch data in terms of individual speaker.")
         print("Usage: {} src des".format(sys.argv[0]))
         exit(1)
 

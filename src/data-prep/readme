@@ -1,0 +1,9 @@
+Data preparation:
+(1)pitch_extraction.py
+    pitch extraction using praat, frame step is 5ms
+(2)group_pitch_by_spk.py
+    group pitch data in terms of spker
+(3)pitch2params.py
+    statistics the mean and standard deviation of each spker
+(4)data_visulization.py
+    visulize the pitch data
