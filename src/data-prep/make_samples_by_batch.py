@@ -21,39 +21,31 @@ def preprocessing_dir(dr):
 def make_samples(fdic, out, num_steps, skip_steps, input_dim):
 
     preprocessing_dir(out)
-    zeros = ["0.0"] * (input_dim - 2)
     
-    padding_line = " ".join(zeros)
-
     fout_dic = {}
-    counter = {"train": 0, "dev": 0, "test": 0}
+    tot = 0
     for spk in fdic:
         fin = fdic[spk]["fin"]
         data = load_data(fin)
         usg = fdic[spk]["usg"]
-        length = len(data)
-        cur_idx = 0
         miu = fdic[spk]["miu"]
         std = fdic[spk]["std"]
         fout = out+"/"+usg
-        y = "{} {}".format(miu, std)+" "+padding_line
+        suffix = " {} {}\n".format(miu, std)
 
         if usg not in fout_dic:
             fout = codecs.open(fout, "w", encoding = "utf8")
             fout_dic[usg] = fout
         f = fout_dic[usg]
 
-        while (cur_idx + num_steps) < length:
-
-            batch = data[cur_idx: cur_idx+num_steps]
-            for line in batch:
-                input_dim_ac = len(line.strip().split())
-                if input_dim_ac != input_dim:
-                    print("Error: input_dim in cfg: {} vs actural input_dim: {}".format(input_dim, input_dim_ac))
-                f.write(line)
-                counter[usg]+=1
-            f.write(y+"\n")
-            cur_idx += skip_steps
+        for line in data:
+            line = line.strip()
+            input_dim_ac = len(line.split())
+            # input dim is 40
+            if input_dim_ac != 43:
+                print("Error: input_dim in cfg: {} vs actural input_dim: {}".format(input_dim, input_dim_ac))
+            line = line + suffix
+            f.write(line)
 
     for k in fout_dic:
         f = fout_dic[k]
