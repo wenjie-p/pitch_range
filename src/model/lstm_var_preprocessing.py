@@ -79,6 +79,8 @@ def analyze_data(data, num_steps):
 
 def train(fp, batch_size, num_steps, input_dim):
     
+    md = init_lstm(num_steps, input_dim, 50)
+
     data = np.loadtxt(fp, "float")
     print(len(data))
     samples_tot = analyze_data(data, num_steps)
@@ -86,7 +88,7 @@ def train(fp, batch_size, num_steps, input_dim):
     spe = samples_tot//batch_size
     print(spe)
     train_data_generator = KerasBatchGenerator(data, batch_size, num_steps, input_dim)
-    md = init_lstm(num_steps, input_dim, 50)
+
     #checkpoint = ModelCheckpoint(filepath = "./", monitor = "val_acc", verbose = 1, save_best_only = True, mode = "max")
     #callback_list = [checkpoint]
 
@@ -109,8 +111,10 @@ def calculate_loss(gen, model, steps):
 
 
 def test(fp, batch_size, num_steps, input_dim):
+
     md = init_lstm(num_steps, input_dim, 50)
     md.load_weights("sgd_final_model_weights.h5")
+
     data = np.loadtxt(fp, "float")
     samples_tot = analyze_data(data, num_steps)
     print(samples_tot)
