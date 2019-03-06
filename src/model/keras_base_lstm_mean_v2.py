@@ -181,13 +181,13 @@ def main(feats, stage):
         print("Training starts...")
         ftrain = feats+"/"+"train"
         fdev = feats+"/"+"dev"
-        model_fit(ftrain, fdev, batch_size, num_steps, input_dim)
+        model_fit(ftrain, fdev, batch_size, num_steps, input_dim, fmd)
     elif stage == "1":
         print("Evaluation starts...")
         train = feats+"/"+"train"
         dev = feats+"/"+"dev"
         test = feats+"/"+"test"
-        model_evaluate(train, dev, test, batch_size, num_steps, input_dim)
+        model_evaluate(train, dev, test, batch_size, num_steps, input_dim, fmd)
     else:
         print("Invalid command.")
         exit(0)
