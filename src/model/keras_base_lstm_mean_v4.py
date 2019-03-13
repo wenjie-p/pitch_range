@@ -72,11 +72,14 @@ class KerasBatchGenerator(object):
             for i in range(self.batch_size):
                 x, y = "", ""
                 while True:
-                    if self.cur_idx+self.num_steps > len(self.tot):
+                    if self.cur_idx+self.num_steps > self.tot:
                         self.cur_idx = 0
                         random.shuffle(self.idxs)
                     beg = self.idxs[self.cur_idx]
                     end = beg+self.num_steps
+                    if end > self.tot:
+                        self.cur_idx += 1
+                        continue
                     samples = self.data[beg:end]
                     means = set(samples[:,-2])
                     stds  = set(samples[:,-1])
@@ -207,6 +210,8 @@ def model_evaluate(train, dev, test,  batch_size, num_steps, input_dim, hidden_s
     dev_data_generator = KerasBatchGenerator(dev, batch_size, num_steps, input_dim, op)
     dev_spe = dev_data_generator.get_spe()
 
+    test_data_generator = KerasBatchGenerator(test, batch_size, num_steps, input_dim, op)
+    test_spe = test_data_generator.get_spe()
 #    ftrain = "./train.out"
 #    fdev = "./dev.out"
     #ftest = "./test.out"
