@@ -104,10 +104,10 @@ def model_fit(ftrain, fdev, batch_size, skip_steps, num_steps, input_dim, fmd, o
     loss = "mean_absolute_error"
     md = init_lstm(loss, num_steps, input_dim, 100)
     es = EarlyStopping(monitor = "val_loss", mode = "min", verbose = 1, patience = 10)
-    mc = ModelCheckpoint(filepath = "./base_mean_mds/"+fmd, mode = "min", save_best_only = True, verbose = 1)
+    mc = ModelCheckpoint(filepath = "./base_span_mds/"+fmd, mode = "min", save_best_only = True, verbose = 1)
     now = datetime.now()
     timestr = now.strftime("%Y-%m-%d %H:%M")
-    tb = TensorBoard(log_dir = "./base_mean_logs/{}".format(timestr), batch_size = batch_size)
+    tb = TensorBoard(log_dir = "./base_span_logs/{}".format(timestr), batch_size = batch_size)
 
     train_data, train_spe = analyze_data(ftrain, batch_size, num_steps)
     train_data_generator = KerasBatchGenerator(train_data, batch_size, skip_steps, num_steps, input_dim, op)
@@ -201,7 +201,7 @@ def model_evaluate(train, dev, test,  batch_size, skip_steps, num_steps, input_d
     #loss = "mean_absolute_percentage_error"
     loss = "mean_absolute_error"
     md = init_lstm(loss, num_steps, input_dim, 100)
-    md.load_weights("./base_mean_mds/"+fmd)
+    md.load_weights("./base_span_mds/"+fmd)
 
     #test_data, test_spe =  analyze_data(dev, batch_size, num_steps)
     #testX, testY = gen_data_for_test(test_data, num_steps, skip_steps, op)
@@ -255,7 +255,7 @@ def main(feats, stage):
     input_dim    = 40
     fmd          = "model_v10.h5"
     # -2 means mean while -1 means std
-    op           = -2
+    op           = -1
 
     if stage == "0":
         print("Training starts...")
