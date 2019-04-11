@@ -152,7 +152,11 @@ def get_loss(fout, gen, spe, md):
     print("The loss is: {}%".format(val))
 
 
-def gen_data_for_test(data, num_steps, skip_steps, idx):
+def gen_data_for_test(fp, num_steps, skip_steps, idx):
+
+    hdf = h5py.File(fp, "r")
+    data = hdf["data_set"][:]
+    hdf.close()
 
     dataX, dataY = [], []
     cur = 0
@@ -168,7 +172,7 @@ def gen_data_for_test(data, num_steps, skip_steps, idx):
             dataY.append(y)
         cur+=skip_steps
 
-    return np.array(dataX), np.array(dataY)
+    return np.array(dataX), np.array(dataY), len(dataX)
 
 def evaluate_manually(md, X, Y, spe, fout):
 
@@ -201,8 +205,8 @@ def model_evaluate(train, dev, test,  batch_size, skip_steps, num_steps, input_d
     md = init_lstm(loss, num_steps, input_dim, 100)
     md.load_weights("./mean_mds/"+fmd)
 
-    test_data, test_spe =  analyze_data(dev, batch_size, num_steps)
-    testX, testY = gen_data_for_test(test_data, num_steps, skip_steps, op)
+    #test_data, test_spe =  analyze_data(dev, batch_size, num_steps)
+    testX, testY, test_spe = gen_data_for_test(test, num_steps, skip_steps, op)
     mape2 = evaluate_manually(md, testX, testY, test_spe, "./test.out")
     mape1 = md.evaluate(testX, testY, batch_size = 50)
     print("The mape manually calculated is {}  {}".format(mape1, mape2))
